@@ -379,15 +379,16 @@ public class ScrapeComposersByEra {
                 if (tdName != null ){ 
 
                     Elements aList = tdName.getElementsByTag("a");
-                    Element a = aList.first();
-
-                    url = a.attr("href");
-                    title = a.attr("title");
-                    name = a.text();
                     
-                    alias = parseAlias(tdName);
-                    
+                    if (!aList.isEmpty()){
+                        Element a = aList.first();
 
+                        if (a.hasAttr("href")){ url = a.attr("href");}
+                        if (a.hasAttr("title")){ title = a.attr("title");}
+                        name = a.text();
+
+                        alias = parseAlias(tdName);
+                    }
                 }
             }
             if (tdList.size() > 1) {
