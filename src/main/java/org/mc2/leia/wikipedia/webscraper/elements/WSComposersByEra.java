@@ -17,16 +17,18 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.mc2.webscraper.wickypedia.elements;
+package org.mc2.leia.wikipedia.webscraper.elements;
 
 import java.util.ArrayList;
-import org.mc2.webscraper.wickypedia.Query;
-
+import java.util.logging.Logger;
+import org.mc2.leia.wikipedia.API.ComposersByEra;
+import org.mc2.leia.wikipedia.webscraper.Query;
 /**
  *
  * @author marco
  */
-public class ComposersByEra extends Query {
+public class WSComposersByEra extends Query implements ComposersByEra {
+    private static Logger log = Logger.getLogger(WSComposersByEra.class.getName());
     
     public static final String URL = "https://en.wikipedia.org/wiki/List_of_classical_music_composers_by_era";
     public static final String NAME = "Art Music";
@@ -38,21 +40,23 @@ public class ComposersByEra extends Query {
     public static final String TABLE_MODEL_UNKNOWN= "000";
     
    
-    private final ArrayList<Period> periods;
-    public ComposersByEra(){
+    private final ArrayList<WSPeriod> periods;
+    public WSComposersByEra(){
        super ("", "");
        this.periods= new ArrayList<>();
     }
-    public ComposersByEra(String title, ArrayList<Period> periods){
+    public WSComposersByEra(String title, ArrayList<WSPeriod> periods){
        super (URL, title);
        this.periods= periods;
     }
     
+    @Override
     public String getName() {
         return NAME;
     }
         
-    public ArrayList<Period> getPeriods() {
+    @Override
+    public ArrayList<WSPeriod> getPeriods() {
         return periods;
     }
     
@@ -61,5 +65,10 @@ public class ComposersByEra extends Query {
         
         return this.getTitle();
         
+    }
+
+    @Override
+    public Integer getId() {
+        return 0;
     }
 }

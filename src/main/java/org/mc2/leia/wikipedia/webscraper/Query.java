@@ -1,7 +1,5 @@
-package wickypedia;
-
 /*
- * JAVA client for QOBUZ.API (http://www.qobuz.com/fr-fr/page/labs).
+ * JAVA web-scaper script collections.
  *
  * Copyright (C) 2017 Marco Curti (marcoc1712 at gmail dot com).
  *
@@ -19,25 +17,40 @@ package wickypedia;
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+package org.mc2.leia.wikipedia.webscraper;
 
-
-import java.io.PrintStream;
-import org.junit.Before;
+import java.util.logging.Logger;
 
 /**
  *
  * @author marco
  */
-public class UnitTest {
-    /**
-     * Prepare output as utf-8.
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
+public class Query {
+    private static Logger log = Logger.getLogger(Query.class.getName());
+    
+    private final String url;
+    
+    private final String title;
+    
+    public Query(String url, String title){
+        this.title= title;
+        this.url= url;
+    }
+    
+    public String getTitle() {
+        return title;
+    }
+    public String getUrl() {
+        return url;
+    }
+
+    public String getCopyrigthHtml(){
         
-        System.setOut(new PrintStream(System.out, true, "utf-8"));
+        return CopyRights.getCopyrigthHtml();
+    }
+    public String getCopyrigthText(){
         
+        return CopyRights.getCopyrigthText();
     }
 
 }

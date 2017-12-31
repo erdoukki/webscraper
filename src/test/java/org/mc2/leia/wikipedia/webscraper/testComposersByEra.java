@@ -3,17 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package wickypedia;
+package org.mc2.leia.wikipedia.webscraper;
 
-import org.mc2.webscraper.wickypedia.elements.ComposersByEra;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import static org.mc2.webscraper.wickypedia.ScrapeComposersByEra.getComposersByEra;
+import static org.mc2.leia.wikipedia.webscraper.ScrapeComposersByEra.getComposersByEra;
 import org.junit.Test;
-import org.mc2.webscraper.wickypedia.elements.Composer;
-import org.mc2.webscraper.wickypedia.elements.ComposerGroup;
-import org.mc2.webscraper.wickypedia.elements.Period;
+import org.mc2.leia.wikipedia.API.Composer;
+import org.mc2.leia.wikipedia.API.ComposerGroup;
+import org.mc2.leia.wikipedia.API.ComposersByEra;
+import org.mc2.leia.wikipedia.API.Period;
+
 
 /**
  *
@@ -21,26 +19,18 @@ import org.mc2.webscraper.wickypedia.elements.Period;
  */
 public class testComposersByEra extends UnitTest {
 
-
     @Test
     public void testComposersByEra() {
                 
-        try {
-            ComposersByEra composersByEra = getComposersByEra();
+        ComposersByEra composersByEra = getComposersByEra();
             
-            System.out.println(composersByEra.getTitle());
-            System.out.println(composersByEra.getCopyrigthText());
-            
-            for (Period period : composersByEra.getPeriods()){
-                
-               printChildren(period, "-");
-            
-            }
-            
-            
-            
-        } catch (IOException ex) {
-            Logger.getLogger(testComposersByEra.class.getName()).log(Level.SEVERE, null, ex);
+        System.out.println(composersByEra.getTitle());
+        System.out.println(composersByEra.getCopyrigthText());
+
+        for (Period period : composersByEra.getPeriods()){
+
+           printChildren(period, "-");
+
         }
 
     }

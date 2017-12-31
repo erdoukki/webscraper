@@ -31,5 +31,11 @@
             <version>2.8.0</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.mc2.leia.wikipedia</groupId>
+            <artifactId>leia-wikipedia-API</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 </project>

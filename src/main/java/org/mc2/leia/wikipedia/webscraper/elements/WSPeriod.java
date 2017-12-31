@@ -17,29 +17,34 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.mc2.webscraper.wickypedia.elements;
+package org.mc2.leia.wikipedia.webscraper.elements;
+
+import java.util.logging.Logger;
+import org.mc2.leia.wikipedia.API.Period;
 
 /**
  *
  * @author marco
  */
-public class Period extends ComposerGroup {
-    
+public class WSPeriod extends WSComposerGroup implements Period {
+    private static Logger log = Logger.getLogger(WSPeriod.class.getName());
    
     private final String title;
     private final String url; 
     
-    public Period(Integer id, String title, String name, String range, String url){
+    public WSPeriod(Integer id, String title, String name, String range, String url){
         super(null, id, name, range, "","period");
         
         this.title = title;
         this.url = url;
 
     }
+    @Override
     public String getTitle() {
         return title;
     }
 
+    @Override
     public String getUrl(){
         
         return this.url.replace("/wiki", "https://en.wikipedia.org/wiki");

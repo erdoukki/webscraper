@@ -17,13 +17,16 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.mc2.webscraper.wickypedia;
+package org.mc2.leia.wikipedia.webscraper;
+
+import java.util.logging.Logger;
 
 /**
  *
  * @author marco
  */
 public class CopyRights {
+    private static Logger log = Logger.getLogger(CopyRights.class.getName());
     
     private static final String FORMULA = "Wikipedia content provided under the terms of the";
     private static final String LICENCE = "Creative Commons BY-SA license";

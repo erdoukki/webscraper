@@ -17,17 +17,19 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.mc2.webscraper.wickypedia.elements;
+package org.mc2.leia.wikipedia.webscraper.elements;
 
+import org.mc2.leia.wikipedia.API.ComposerGroup;
 import java.util.ArrayList;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.logging.Logger;
 
 /**
  *
  * @author marco
  */
-public class ComposerGroup {
-    
+public class WSComposerGroup implements ComposerGroup  {
+    private static Logger log = Logger.getLogger(WSComposerGroup.class.getName());
     
     public static enum DISCARDED {
     
@@ -36,18 +38,18 @@ public class ComposerGroup {
         External_links,
     };
     @JsonIgnore
-    private final ComposerGroup parent;
+    private final WSComposerGroup parent;
     private final Integer id;
     private final String name;
     private final String period;
     private final String school;
  
-    private ArrayList<ComposerGroup> children;
-    private ArrayList<Composer> composers;
+    private ArrayList<WSComposerGroup> children;
+    private ArrayList<WSComposer> composers;
     
     private final Boolean isValid;
     
-    public ComposerGroup(ComposerGroup parent, Integer id, String name, String period, String school, String idAttr){
+    public WSComposerGroup(WSComposerGroup parent, Integer id, String name, String period, String school, String idAttr){
         
         this.parent = parent;
         this.id = id;
@@ -74,44 +76,54 @@ public class ComposerGroup {
         return false;
     }
     
+    @Override
     public Boolean  isValid() {
         return (isValid);
     }
     @JsonIgnore
-    public ComposerGroup getParent() {
+    @Override
+    public WSComposerGroup getParent() {
         return parent;
     }
     
+    @Override
     public Integer getId() {
         return id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getPeriod() {
         return period;
     }
 
+    @Override
     public String getSchool() {
         return school;
     }
    
-    public ArrayList<ComposerGroup> getChildren() {
+    @Override
+    public ArrayList<? extends ComposerGroup> getChildren() {
                 
         return children;
     }
 
-    public ArrayList<Composer> getComposers() {
+    @Override
+    public ArrayList<WSComposer> getComposers() {
 
         return composers;
     }
+    @Override
     public Integer getChildrenTotal() {
                 
         return children.size();
     }
 
+    @Override
     public Integer getComposersTotal() {
 
         return composers.size();

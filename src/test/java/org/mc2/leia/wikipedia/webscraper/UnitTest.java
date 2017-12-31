@@ -1,5 +1,7 @@
+package org.mc2.leia.wikipedia.webscraper;
+
 /*
- * JAVA web-scaper script collections.
+ * JAVA client for QOBUZ.API (http://www.qobuz.com/fr-fr/page/labs).
  *
  * Copyright (C) 2017 Marco Curti (marcoc1712 at gmail dot com).
  *
@@ -17,37 +19,25 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.mc2.webscraper.wickypedia;
+
+
+import java.io.PrintStream;
+import org.junit.Before;
 
 /**
  *
  * @author marco
  */
-public class Query {
-    
-    private final String url;
-    
-    private final String title;
-    
-    public Query(String url, String title){
-        this.title= title;
-        this.url= url;
-    }
-    
-    public String getTitle() {
-        return title;
-    }
-    public String getUrl() {
-        return url;
-    }
-
-    public String getCopyrigthHtml(){
+public class UnitTest {
+    /**
+     * Prepare output as utf-8.
+     * @throws java.lang.Exception
+     */
+    @Before
+    public void setUp() throws Exception {
         
-        return CopyRights.getCopyrigthHtml();
-    }
-    public String getCopyrigthText(){
+        System.setOut(new PrintStream(System.out, true, "utf-8"));
         
-        return CopyRights.getCopyrigthText();
     }
 
 }

@@ -17,57 +17,66 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package org.mc2.webscraper.wickypedia;
+package org.mc2.leia.wikipedia.webscraper;
 
-import org.mc2.webscraper.wickypedia.elements.Period;
-import org.mc2.webscraper.wickypedia.elements.ComposersByEra;
-import org.mc2.webscraper.wickypedia.elements.Composer;
-import org.mc2.webscraper.wickypedia.elements.ComposerGroup;
+import org.mc2.leia.wikipedia.webscraper.elements.WSPeriod;
+import org.mc2.leia.wikipedia.webscraper.elements.WSComposersByEra;
+import org.mc2.leia.wikipedia.webscraper.elements.WSComposer;
+import org.mc2.leia.wikipedia.webscraper.elements.WSComposerGroup;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
+import org.mc2.leia.wikipedia.API.ComposerGroup;
 /**
  *
  * @author marco
  */
 public class ScrapeComposersByEra {
+    private static Logger log = Logger.getLogger(ScrapeComposersByEra.class.getName());
+    
+    public static WSComposersByEra getComposersByEra() {
 
-    public static ComposersByEra getComposersByEra() throws IOException{
-        
-        Document doc = Jsoup.connect(ComposersByEra.URL).get();
-        
-        String title = doc.title();
-        
-        if (title.endsWith(" - Wikipedia")){
-        
-            title= title.substring(0, title.length()-12);
-        }
-
-        ArrayList<Period> periods = listPeriods(doc);
-        
-        for (Period period : periods){
-
-            //System.out.println(period.toString());
+        try {
+            Document doc = Jsoup.connect(WSComposersByEra.URL).get();
             
-            listComposers(period);
+            String title = doc.title();
             
+            if (title.endsWith(" - Wikipedia")){
+                
+                title= title.substring(0, title.length()-12);
+            }
+            
+            ArrayList<WSPeriod> periods = listPeriods(doc);
+            
+            for (WSPeriod period : periods){
+                
+                //System.out.println(period.toString());
+                
+                listComposers(period);
+                
+            }
+            
+            return new WSComposersByEra(title, periods);
+            
+        } catch (IOException ex) {
+            Logger.getLogger(ScrapeComposersByEra.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+            return new WSComposersByEra();
         }
-        
-        return new ComposersByEra(title, periods);
-
     }
             
-    public static ArrayList<Period> listPeriods(Document doc) throws UnsupportedEncodingException, IOException{
+    public static ArrayList<WSPeriod> listPeriods(Document doc) throws UnsupportedEncodingException, IOException{
     
-        ArrayList<Period> periods = new ArrayList<>();
+        ArrayList<WSPeriod> periods = new ArrayList<>();
 
         //System.out.println(doc.title());
         
@@ -99,7 +108,7 @@ public class ScrapeComposersByEra {
             String name = a.text();
             String range = td1.text();
             
-            Period period = new Period(id, title, name, range, url);
+            WSPeriod period = new WSPeriod(id, title, name, range, url);
             periods.add(period);
 
         }
@@ -107,7 +116,7 @@ public class ScrapeComposersByEra {
        
     }
     
-    public static void listComposers(Period period) throws IOException {
+    public static void listComposers(WSPeriod period) throws IOException {
         
         System.setOut(new PrintStream(System.out, true, "utf-8"));
 
@@ -121,8 +130,8 @@ public class ScrapeComposersByEra {
         Integer id=period.getId();
         Integer lastId=id*10000;
 
-        ComposerGroup h2composerGroup=null;
-        ComposerGroup h3composerGroup=null;
+        WSComposerGroup h2composerGroup=null;
+        WSComposerGroup h3composerGroup=null;
         
         String lastFound="";
         
@@ -177,13 +186,13 @@ public class ScrapeComposersByEra {
         }
     }
 
-    private static ComposerGroup parseH2ComposerGroup(ComposerGroup parent, Element composerGroupdHeader, Integer id){
+    private static WSComposerGroup parseH2ComposerGroup(WSComposerGroup parent, Element composerGroupdHeader, Integer id){
       
         
         String name="";
         String className ="";
         String idAttr="";
-        ComposerGroup out=null;
+        WSComposerGroup out=null;
         
         Element span = parseComposerGroup(composerGroupdHeader);
         
@@ -195,16 +204,16 @@ public class ScrapeComposersByEra {
 
         }
         
-        out = new ComposerGroup(parent, id, name, "","", idAttr);
+        out = new WSComposerGroup(parent, id, name, "","", idAttr);
         return out;
            
     }
-    private static ComposerGroup parseH3ComposerGroup(ComposerGroup parent, Element composerGroupdHeader, Integer id ){
+    private static WSComposerGroup parseH3ComposerGroup(WSComposerGroup parent, Element composerGroupdHeader, Integer id ){
       
         String name="";
         String className ="";
         String idAttr="";
-        ComposerGroup out=null;
+        WSComposerGroup out=null;
         
         Element span = parseComposerGroup(composerGroupdHeader);
         
@@ -215,7 +224,7 @@ public class ScrapeComposersByEra {
             idAttr = span.attr("id");
 
         }
-        out = new ComposerGroup(parent, id, name, parent.getName(), name, idAttr);
+        out = new WSComposerGroup(parent, id, name, name, parent.getName(), idAttr);
         
         //parent.getChildren().add(out);
         
@@ -262,7 +271,7 @@ public class ScrapeComposersByEra {
                 thList.get(5).text().equals("Remarks")
             ){
             
-                return ComposersByEra.TABLE_MODEL_100;
+                return WSComposersByEra.TABLE_MODEL_100;
 
                 
         } else if (    thList.size() == 5 &&
@@ -273,7 +282,7 @@ public class ScrapeComposersByEra {
                 thList.get(4).text().equals("Picture")
             ){
             
-                return ComposersByEra.TABLE_MODEL_102;
+                return WSComposersByEra.TABLE_MODEL_102;
 
                 
         } else if ( thList.size() == 4 &&
@@ -283,7 +292,7 @@ public class ScrapeComposersByEra {
                     thList.get(3).text().equals("Notes")
             ){
             
-                return ComposersByEra.TABLE_MODEL_200;
+                return WSComposersByEra.TABLE_MODEL_200;
         
         } else if ( thList.size() == 5 &&
                     thList.get(0).text().equals("Name")  &&
@@ -293,17 +302,17 @@ public class ScrapeComposersByEra {
                     thList.get(4).text().equals("Comments")
             ){
             
-                return ComposersByEra.TABLE_MODEL_500;
+                return WSComposersByEra.TABLE_MODEL_500;
         }
         
-        return ComposersByEra.TABLE_MODEL_UNKNOWN;
+        return WSComposersByEra.TABLE_MODEL_UNKNOWN;
     }
-    private static int parseComposerList(ComposerGroup composerGroup, Element composerList, Integer id){
+    private static int parseComposerList(WSComposerGroup composerGroup, Element composerList, Integer id){
 
         Elements liList = composerList.getElementsByTag("li");
         Integer composerId = id;
         
-        ArrayList<Composer> composers = new  ArrayList<>();
+        ArrayList<WSComposer> composers = new  ArrayList<>();
         
         for (Element li : liList) {
             
@@ -317,7 +326,7 @@ public class ScrapeComposersByEra {
             
             composerId++;
             
-            Composer composer = new Composer(   composerGroup,
+            WSComposer composer = new WSComposer(   composerGroup,
                                                 composerId,
                                                 name,  
                                                 title,
@@ -334,7 +343,7 @@ public class ScrapeComposersByEra {
         return composerId;
         
     }
-    private static Integer parseComposerTable(Element composerTable, Integer id,  ComposerGroup composerGroup){
+    private static Integer parseComposerTable(Element composerTable, Integer id,  WSComposerGroup composerGroup){
         
         String model = parseTableHeader(composerTable);
 
@@ -344,7 +353,7 @@ public class ScrapeComposersByEra {
 
         Integer composerId = id;
         
-        ArrayList<Composer> composers = new  ArrayList<>();
+        ArrayList<WSComposer> composers = new  ArrayList<>();
         
         for (Element tr : trList) {
             
@@ -409,16 +418,16 @@ public class ScrapeComposersByEra {
             }
             if (tdList.size() > 3) {
                 
-                if (model.equals(ComposersByEra.TABLE_MODEL_100) ||
-                    model.equals(ComposersByEra.TABLE_MODEL_102) ||
-                    model.equals(ComposersByEra.TABLE_MODEL_500)) {
+                if (model.equals(WSComposersByEra.TABLE_MODEL_100) ||
+                    model.equals(WSComposersByEra.TABLE_MODEL_102) ||
+                    model.equals(WSComposersByEra.TABLE_MODEL_500)) {
                     
                     tdNationality = tdList.get(3);
                     if (tdNationality != null ){ 
 
                         nationality = tdNationality.text();
                     }
-                } else if (model.equals(ComposersByEra.TABLE_MODEL_200)) {
+                } else if (model.equals(WSComposersByEra.TABLE_MODEL_200)) {
                      
                     tdRemarks = tdList.get(3);
                     if (tdRemarks != null ){ 
@@ -429,8 +438,8 @@ public class ScrapeComposersByEra {
                    
             }
             if (tdList.size() > 4) {
-                if (model.equals(ComposersByEra.TABLE_MODEL_100) ||
-                    model.equals(ComposersByEra.TABLE_MODEL_102)) {
+                if (model.equals(WSComposersByEra.TABLE_MODEL_100) ||
+                    model.equals(WSComposersByEra.TABLE_MODEL_102)) {
 
                     tdPicture = tdList.get(4);
                     if (tdPicture != null ){ 
@@ -445,7 +454,7 @@ public class ScrapeComposersByEra {
                             picture = img.attr("src");
                         }
                     }
-                } else if (model.equals(ComposersByEra.TABLE_MODEL_500)) {
+                } else if (model.equals(WSComposersByEra.TABLE_MODEL_500)) {
                      
                     tdRemarks = tdList.get(4);
                     if (tdRemarks != null ){ 
@@ -473,7 +482,7 @@ public class ScrapeComposersByEra {
                 }
             }
             
-            Composer composer = new Composer(   composerGroup,
+            WSComposer composer = new WSComposer(   composerGroup,
                                                 composerId,
                                                 name,
                                                 alias,  
@@ -499,15 +508,16 @@ public class ScrapeComposersByEra {
         if (composerGroup.isValid() && composerGroup.getParent() !=null){
 
             if (!composerGroup.getParent().getChildren().contains(composerGroup)){
-            
-                composerGroup.getParent().getChildren().add(composerGroup);
+                
+                
+                (( ArrayList<ComposerGroup>)composerGroup.getParent().getChildren()).add(composerGroup);
         
             }
             if (composerGroup.getParent().isValid() &&
                 composerGroup.getParent().getParent()!=null && 
                 !composerGroup.getParent().getParent().getChildren().contains(composerGroup.getParent())){
 
-                composerGroup.getParent().getParent().getChildren().add(composerGroup.getParent());
+                (( ArrayList<ComposerGroup>)composerGroup.getParent().getParent().getChildren()).add(composerGroup.getParent());
             }
         }
     }
